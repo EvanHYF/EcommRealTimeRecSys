@@ -3,13 +3,24 @@ const redis = require('redis');
 const axios = require('axios');
 
 const client = new kafka.KafkaClient({ kafkaHost: 'localhost:9093,localhost:9094,localhost:9095' });
+const topics = [
+    { topic: 'view-events', partition: 0 },
+    { topic: 'add-to-cart-events', partition: 0 },
+    { topic: 'purchase-events', partition: 0 }
+];
+
+// Check and create topics if not exist
+client.createTopics(topics.map(t => ({ topic: t.topic, partitions: 1, replicationFactor: 1 })), (err, result) => {
+    if (err) {
+        console.error('Error creating topics:', err);
+    } else {
+        console.log('Topics created or already exist:', result);
+    }
+});
+
 const consumer = new kafka.Consumer(
     client,
-    [
-        { topic: 'view-events', partition: 0 },
-        { topic: 'add-to-cart-events', partition: 0 },
-        { topic: 'purchase-events', partition: 0 }
-    ],
+    topics,
     {
         autoCommit: true
     }
