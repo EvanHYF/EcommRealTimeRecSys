@@ -2,6 +2,7 @@ package com.ecommrealtimerecsys;
 
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
@@ -14,24 +15,31 @@ public class SimpleFlinkJob {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // 配置 Kafka 消费者
-        Properties consumerProperties = new Properties();
-        consumerProperties.setProperty("bootstrap.servers", "localhost:9092");
-        consumerProperties.setProperty("group.id", "flink-consumer");
-        FlinkKafkaConsumer<String> consumer = new FlinkKafkaConsumer<>("input-topic", new SimpleStringSchema(), consumerProperties);
+        Properties properties = new Properties();
+        properties.setProperty("bootstrap.servers", "kafka1-1:9093,kafka2-1:9094,kafka3-1:9095");
+        properties.setProperty("group.id", "flink-consumer");
+
+        // 创建多个 Kafka 消费者，分别读取不同的主题
+        FlinkKafkaConsumer<String> viewEventsConsumer = new FlinkKafkaConsumer<>("view-events", new SimpleStringSchema(), properties);
+        FlinkKafkaConsumer<String> addToCartEventsConsumer = new FlinkKafkaConsumer<>("add-to-cart-events", new SimpleStringSchema(), properties);
+        FlinkKafkaConsumer<String> purchaseEventsConsumer = new FlinkKafkaConsumer<>("purchase-events", new SimpleStringSchema(), properties);
 
         // 从 Kafka 读取数据
-        DataStream<String> input = env.addSource(consumer);
+        DataStreamSource<String> viewEventsStream = env.addSource(viewEventsConsumer);
+        DataStreamSource<String> addToCartEventsStream = env.addSource(addToCartEventsConsumer);
+        DataStreamSource<String> purchaseEventsStream = env.addSource(purchaseEventsConsumer);
+
+        // 合并多个数据流
+        DataStream<String> inputStream = viewEventsStream.union(addToCartEventsStream, purchaseEventsStream);
 
         // 简单处理：将输入字符串转换为大写
-        DataStream<String> processed = input.map(String::toUpperCase);
+        DataStream<String> processedStream = inputStream.map(String::toUpperCase);
 
         // 配置 Kafka 生产者
-        Properties producerProperties = new Properties();
-        producerProperties.setProperty("bootstrap.servers", "localhost:9092");
-        FlinkKafkaProducer<String> producer = new FlinkKafkaProducer<>("output-topic", new SimpleStringSchema(), producerProperties);
+        FlinkKafkaProducer<String> producer = new FlinkKafkaProducer<>("output-topic", new SimpleStringSchema(), properties);
 
         // 将处理后的数据写回 Kafka
-        processed.addSink(producer);
+        processedStream.addSink(producer);
 
         // 执行作业
         env.execute("Simple Flink Job");
