@@ -13,11 +13,19 @@ app.use(cors()); // Enable CORS
 
 // Redis client configuration
 const redisClient = redis.createClient({
-    url: 'redis://localhost:6379' // Redis address
+    url: 'redis://localhost:6479' // Redis address
 });
 
 redisClient.on('error', (err) => {
     console.error('Redis error:', err);
+});
+
+redisClient.on('connect', () => {
+    console.log('Redis client connected');
+});
+
+redisClient.on('reconnecting', () => {
+    console.log('Redis client reconnecting');
 });
 
 // Connect to Redis

@@ -43,7 +43,9 @@ function startConsumer() {
         }
     );
 
-    const redisClient = redis.createClient();
+    const redisClient = redis.createClient({
+        url: 'redis://localhost:6479'
+    });
     redisClient.on('error', (err) => {
         console.error('Redis error:', err);
     });
