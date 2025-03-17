@@ -1,5 +1,4 @@
 const kafka = require('kafka-node');
-const { v4: uuidv4 } = require('uuid');
 
 const client = new kafka.KafkaClient({ kafkaHost: 'localhost:9093,localhost:9094,localhost:9095' });
 const producer = new kafka.Producer(client);
@@ -13,6 +12,12 @@ const topics = [
 const eventTypes = ['view', 'add_to_cart', 'purchase'];
 const products = ['product1', 'product2', 'product3', 'product4', 'product5'];
 
+// 固定 10 个用户 ID
+const userIds = [
+    'user1', 'user2', 'user3', 'user4', 'user5',
+    'user6', 'user7', 'user8', 'user9', 'user10'
+];
+
 function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -20,7 +25,7 @@ function getRandomElement(arr) {
 function generateEvent() {
     const eventType = getRandomElement(eventTypes);
     const product = getRandomElement(products);
-    const userId = uuidv4();
+    const userId = getRandomElement(userIds);
     const timestamp = new Date().toISOString();
 
     return {
@@ -45,7 +50,7 @@ function sendEvent(event) {
     });
 }
 
-// Produce events at regular intervals
+// 每隔 1 秒生成一个事件
 setInterval(() => {
     const event = generateEvent();
     sendEvent(event);

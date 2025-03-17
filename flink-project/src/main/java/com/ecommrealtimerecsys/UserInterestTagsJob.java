@@ -187,9 +187,11 @@ public class UserInterestTagsJob {
          * Convert UserProfile to JSON string.
          */
         public String toJsonString() {
-            return String.format(
+            String json = String.format(
                     "{\"userId\":\"%s\",\"viewCount\":%d,\"addToCartCount\":%d,\"purchaseCount\":%d,\"lastActivityTime\":%d}",
                     userId, viewCount, addToCartCount, purchaseCount, lastActivityTime);
+            System.out.println("Generated JSON: " + json);
+            return json;
         }
     }
 

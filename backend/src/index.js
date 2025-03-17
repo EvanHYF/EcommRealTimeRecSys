@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const redis = require('redis');
 const cors = require('cors');
 const { exec } = require('child_process');
+const redisQueries = require('./redisQueries'); // Import Redis query interface
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -88,8 +89,51 @@ app.get('/api/uv-data', async (req, res) => {
 app.post('/api/user-behavior', async (req, res) => {
     const event = req.body; // Get event data from request body
     try {
-        await redisClient.rPush('events', JSON.stringify(event)); // Store event in Redis list
-        res.status(201).send(); // Return success status
+        // Validate event data
+        if (!event || !event.userId || !event.eventType || !event.product) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid event data. Required fields: userId, eventType, product.',
+                data: null,
+            });
+        }
+
+        // Store event in Redis list
+        await redisClient.rPush('events', JSON.stringify(event));
+
+        // Return success response
+        res.status(201).json({
+            success: true,
+            message: 'Event stored successfully.',
+            data: event,
+        });
+    } catch (err) {
+        console.error('Error storing event:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to store event.',
+            data: null,
+        });
+    }
+});
+
+// Fetch single user profile
+app.get('/api/user-profile/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const profile = await redisQueries.getUserProfile(userId);
+        res.json(profile);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+// Fetch multiple user profiles
+app.post('/api/user-profiles', async (req, res) => {
+    try {
+        const userIds = req.body.userIds;
+        const profiles = await redisQueries.getUserProfiles(userIds);
+        res.json(profiles);
     } catch (err) {
         res.status(500).send(err);
     }
