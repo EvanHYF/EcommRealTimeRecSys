@@ -4,6 +4,7 @@ const redis = require('redis');
 const cors = require('cors');
 const { exec } = require('child_process');
 const redisQueries = require('./redisQueries'); // Import Redis query interface
+const recommendationService = require('./recommendationService'); // Import recommendation service
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -138,7 +139,15 @@ app.post('/api/user-profiles', async (req, res) => {
         res.status(500).send(err);
     }
 });
-
+app.get('/api/recommendations/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const recommendations = await recommendationService.getRecommendations(userId);
+        res.json(recommendations);
+    } catch (err) {
+        res.status(500).send({ error: err.message });
+    }
+});
 // Start the server
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);

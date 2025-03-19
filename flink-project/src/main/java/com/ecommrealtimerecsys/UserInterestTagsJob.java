@@ -126,7 +126,13 @@ public class UserInterestTagsJob {
         RedisSink<UserProfile> redisSink = new RedisSink<>(redisConfig, new RedisUserProfileMapper());
 
         // Write user profiles to Redis
+
         userProfileStream.addSink(redisSink);
+        // Configure Redis Sink for user interests
+        RedisSink<UserProfile> redisInterestSink = new RedisSink<>(redisConfig, new RedisUserInterestMapper());
+
+        // Write user interests to Redis
+        userProfileStream.addSink(redisInterestSink);
 
         // Execute the Flink job
         env.execute("User Interest Tags Job");
@@ -184,8 +190,30 @@ public class UserInterestTagsJob {
         }
 
         /**
+         * Calculate the interest score based on user behavior.
+         */
+        public int calculateInterestScore() {
+            return viewCount * 1 + addToCartCount * 3 + purchaseCount * 5;
+        }
+
+        /**
+         * Generate recommended products based on interest score.
+         */
+        public List<String> generateRecommendations() {
+            int interestScore = calculateInterestScore();
+            if (interestScore > 10) {
+                return Arrays.asList("product1", "product2", "product3");
+            } else if (interestScore > 5) {
+                return Arrays.asList("product4", "product5");
+            } else {
+                return Arrays.asList("product3");
+            }
+        }
+
+        /**
          * Convert UserProfile to JSON string.
          */
+
         public String toJsonString() {
             String json = String.format(
                     "{\"userId\":\"%s\",\"viewCount\":%d,\"addToCartCount\":%d,\"purchaseCount\":%d,\"lastActivityTime\":%d}",
@@ -215,6 +243,30 @@ public class UserInterestTagsJob {
         public String getValueFromData(UserProfile profile) {
             // Store user profile as a JSON string
             return profile.toJsonString();
+        }
+    }
+
+    public static class RedisUserInterestMapper implements RedisMapper<UserProfile> {
+        private static final ObjectMapper objectMapper = new ObjectMapper();  // JSON 序列化工具
+
+        @Override
+        public RedisCommandDescription getCommandDescription() {
+            return new RedisCommandDescription(RedisCommand.HSET, "UserInterestTag");
+        }
+
+        @Override
+        public String getKeyFromData(UserProfile profile) {
+            return profile.getUserId();
+        }
+
+        @Override
+        public String getValueFromData(UserProfile profile) {
+            try {
+                return objectMapper.writeValueAsString(profile.generateRecommendations());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "[]";
+            }
         }
     }
 }
