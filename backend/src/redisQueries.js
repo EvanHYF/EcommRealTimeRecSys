@@ -30,6 +30,31 @@ async function getUserProfile(userId) {
     }
 }
 
+// Fetch user interest (recommendations)
+async function getUserInterest(userId) {
+    try {
+        const key = 'UserInterestTag';
+        const value = await redisClient.hGet(key, userId);
+
+        if (!value) {
+            throw new Error(`User interest with ID ${userId} does not exist in Redis.`);
+        }
+
+        // 确保 value 是 JSON 格式
+        try {
+            return JSON.parse(value);
+        } catch (err) {
+            console.error('Invalid JSON format in Redis:', value);
+            throw new Error('Stored value is not valid JSON.');
+        }
+
+    } catch (err) {
+        console.error('Error fetching user interest:', err);
+        throw new Error(`Failed to fetch user interest: ${err.message}`);
+    }
+}
+
+
 // Fetch multiple user profiles
 async function getUserProfiles(userIds) {
     try {
@@ -60,5 +85,6 @@ async function getUserProfiles(userIds) {
 
 module.exports = {
     getUserProfile,
+    getUserInterest, // Export the new method
     getUserProfiles
 };
