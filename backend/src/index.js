@@ -5,6 +5,7 @@ const cors = require('cors');
 const { exec } = require('child_process');
 const redisQueries = require('./redisQueries'); // Import Redis query interface
 const recommendationService = require('./recommendationService'); // Import recommendation service
+const { getConfig, setConfig } = require('./zookeeperClient'); // Import ZooKeeper client
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -139,6 +140,8 @@ app.post('/api/user-profiles', async (req, res) => {
         res.status(500).send(err);
     }
 });
+
+// Fetch recommendations for a user
 app.get('/api/recommendations/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -148,30 +151,34 @@ app.get('/api/recommendations/:userId', async (req, res) => {
         res.status(500).send({ error: err.message });
     }
 });
+
+// Example: Get configuration from ZooKeeper
+app.get('/api/config/:path', async (req, res) => {
+    try {
+        const path = req.params.path;
+        const config = await getConfig(path);
+        res.json({ path, config });
+    } catch (err) {
+        res.status(500).send({ error: err.message });
+    }
+});
+
+// Example: Set configuration in ZooKeeper
+app.post('/api/config/:path', async (req, res) => {
+    try {
+        const path = req.params.path;
+        const value = req.body.value;
+        await setConfig(path, value);
+        res.json({ path, value });
+    } catch (err) {
+        res.status(500).send({ error: err.message });
+    }
+});
+
 // Start the server
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
 
     // Clear old data from Redis
     await clearOldData();
-
-    // Start ecommerceSimulator.js
-    // exec('node src/ecommerceSimulator.js', (err, stdout, stderr) => {
-    //     if (err) {
-    //         console.error(`Error starting ecommerceSimulator.js: ${err}`);
-    //         return;
-    //     }
-    //     console.log(`ecommerceSimulator.js output: ${stdout}`);
-    //     console.error(`ecommerceSimulator.js error output: ${stderr}`);
-    // });
-    //
-    // // Start eventProcessor.js
-    // exec('node src/eventProcessor.js', (err, stdout, stderr) => {
-    //     if (err) {
-    //         console.error(`Error starting eventProcessor.js: ${err}`);
-    //         return;
-    //     }
-    //     console.log(`eventProcessor.js output: ${stdout}`);
-    //     console.error(`eventProcessor.js error output: ${stderr}`);
-    // });
 });

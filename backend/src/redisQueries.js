@@ -1,21 +1,49 @@
 const redis = require('redis');
+const { getConfig } = require('./zookeeperClient'); // Import ZooKeeper client
 
-// Redis client configuration
-const redisClient = redis.createClient({
-    url: 'redis://localhost:6479' // Ensure the port is correct
-});
+let redisClient;
 
-// Handle Redis connection errors
-redisClient.on('error', (err) => {
-    console.error('Redis error:', err);
-});
+// Initialize Redis client
+async function initRedisClient() {
+    try {
+        const redisUrl = await getConfig('/config/redis/url'); // Get Redis URL from ZooKeeper
 
-// Connect to Redis
-redisClient.connect().catch(console.error);
+        redisClient = redis.createClient({
+            url: redisUrl // Use the URL from ZooKeeper
+        });
+
+        redisClient.on('error', (err) => {
+            console.error('Redis error:', err);
+        });
+
+        redisClient.on('connect', () => {
+            console.log('Redis client connected');
+        });
+
+        redisClient.on('reconnecting', () => {
+            console.log('Redis client reconnecting');
+        });
+
+        // Connect to Redis
+        await redisClient.connect();
+    } catch (err) {
+        console.error('Error initializing Redis client:', err);
+        throw new Error(`Failed to initialize Redis client: ${err.message}`);
+    }
+}
+
+// Ensure Redis client is initialized before using it
+async function ensureRedisClient() {
+    if (!redisClient) {
+        await initRedisClient();
+    }
+}
 
 // Fetch single user profile
 async function getUserProfile(userId) {
     try {
+        await ensureRedisClient(); // Ensure Redis client is initialized
+
         const key = 'user-profiles'; // Redis key is 'user-profiles'
         const value = await redisClient.hGet(key, userId); // Use hGet to get the value for the specific field (userId)
 
@@ -33,6 +61,8 @@ async function getUserProfile(userId) {
 // Fetch user interest (recommendations)
 async function getUserInterest(userId) {
     try {
+        await ensureRedisClient(); // Ensure Redis client is initialized
+
         const key = 'UserInterestTag';
         const value = await redisClient.hGet(key, userId);
 
@@ -47,17 +77,17 @@ async function getUserInterest(userId) {
             console.error('Invalid JSON format in Redis:', value);
             throw new Error('Stored value is not valid JSON.');
         }
-
     } catch (err) {
         console.error('Error fetching user interest:', err);
         throw new Error(`Failed to fetch user interest: ${err.message}`);
     }
 }
 
-
 // Fetch multiple user profiles
 async function getUserProfiles(userIds) {
     try {
+        await ensureRedisClient(); // Ensure Redis client is initialized
+
         const profiles = {};
         const key = 'user-profiles'; // Redis key is 'user-profiles'
 
