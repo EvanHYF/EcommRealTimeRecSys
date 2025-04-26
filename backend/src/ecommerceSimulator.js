@@ -12,7 +12,7 @@ const topics = [
 const eventTypes = ['view', 'add_to_cart', 'purchase'];
 const products = ['product1', 'product2', 'product3', 'product4', 'product5'];
 
-// 固定 10 个用户 ID
+
 const userIds = [
     'user1', 'user2', 'user3', 'user4', 'user5',
     'user6', 'user7', 'user8', 'user9', 'user10'
@@ -50,7 +50,7 @@ function sendEvent(event) {
     });
 }
 
-// 每隔 1 秒生成一个事件
+// 1 event per second
 setInterval(() => {
     const event = generateEvent();
     sendEvent(event);

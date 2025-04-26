@@ -1,0 +1,21 @@
+{
+  "dashboard": {
+    "uid": "ecomm-overview",
+    "title": "Ecomm Overview",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "HTTP Requests/s",
+        "targets": [
+          {
+            "expr": "rate(http_request_duration_ms_count[1m])",
+            "legendFormat": "{{route}}",
+            "refId": "A"
+          }
+        ]
+      }
+    ],
+    "schemaVersion": 16,
+    "version": 0
+  }
+}

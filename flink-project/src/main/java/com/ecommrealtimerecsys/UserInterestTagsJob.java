@@ -11,12 +11,17 @@ import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolC
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommand;
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommandDescription;
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisMapper;
+import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.Watcher.Event;
+import org.apache.zookeeper.data.Stat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -24,7 +29,60 @@ import java.util.Properties;
  * The results are stored in Redis for user profile storage.
  */
 public class UserInterestTagsJob {
+    // Static weights config
+    private static Map<String, Integer> behaviorWeights = new HashMap<>();
+    static {
+        behaviorWeights.put("view", 1);
+        behaviorWeights.put("add_to_cart", 3);
+        behaviorWeights.put("purchase", 5);
+    }
+
+    // ZooKeeper monitoring thread
+    private static void setupZKWatcher() {
+        new Thread(() -> {
+            try {
+                ZooKeeper zk = new ZooKeeper("zookeeper:2181", 3000, null);
+                watchWeightsConfig(zk);
+            } catch (Exception e) {
+                System.err.println("ZK connect failed，use default recommendation weights");
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private static void watchWeightsConfig(ZooKeeper zk) throws Exception {
+        Stat stat = zk.exists("/config/recommendation/weights", watchedEvent -> {
+            if (watchedEvent.getType() == Event.EventType.NodeDataChanged) {
+                try {
+                    updateWeights(zk);
+                } catch (Exception e) {
+                    System.err.println("Weights update failed");
+                    e.printStackTrace();
+                }
+            }
+        });
+        if (stat != null) updateWeights(zk);
+    }
+
+    private static void updateWeights(ZooKeeper zk) throws Exception {
+        byte[] data = zk.getData("/config/recommendation/weights", false, null);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Integer> newWeights = mapper.readValue(
+                new String(data),
+                new com.fasterxml.jackson.core.type.TypeReference<Map<String, Integer>>(){}
+        );
+
+        synchronized (behaviorWeights) {
+            behaviorWeights.clear();
+            behaviorWeights.putAll(newWeights);
+            System.out.println("Weights have updated: " + behaviorWeights);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
+        // Start ZK listening
+        setupZKWatcher();
+
         // Set up the execution environment
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
@@ -193,7 +251,11 @@ public class UserInterestTagsJob {
          * Calculate the interest score based on user behavior.
          */
         public int calculateInterestScore() {
-            return viewCount * 1 + addToCartCount * 3 + purchaseCount * 5;
+            synchronized (behaviorWeights) {
+                return viewCount * behaviorWeights.getOrDefault("view", 1)
+                        + addToCartCount * behaviorWeights.getOrDefault("add_to_cart", 3)
+                        + purchaseCount * behaviorWeights.getOrDefault("purchase", 5);
+            }
         }
 
         /**

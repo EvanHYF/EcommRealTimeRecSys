@@ -1,34 +1,39 @@
 const redis = require('redis');
-const { getConfig } = require('./zookeeperClient'); // Import ZooKeeper client
+const zkClient = require('./zookeeperClient'); // Import ZooKeeper client
 
 let redisClient;
+const DEFAULT_REDIS_URL = 'redis://localhost:6479';
 
 // Initialize Redis client
 async function initRedisClient() {
     try {
-        const redisUrl = await getConfig('/config/redis/url'); // Get Redis URL from ZooKeeper
+        // Make sure ZK client is ready
+        await zkClient.ensureReady();
+
+        let redisUrl;
+        try {
+            const urlData = await zkClient.getConfig('/config/redis/url');
+            redisUrl = urlData.toString();
+        } catch (err) {
+            console.warn('Using default Redis URL:', err.message);
+            redisUrl = DEFAULT_REDIS_URL;
+        }
 
         redisClient = redis.createClient({
-            url: redisUrl // Use the URL from ZooKeeper
+            url: redisUrl,
+            socket: {
+                reconnectStrategy: (retries) => Math.min(retries * 100, 5000)
+            }
         });
 
-        redisClient.on('error', (err) => {
-            console.error('Redis error:', err);
-        });
+        redisClient.on('error', (err) => console.error('Redis error:', err));
+        redisClient.on('connect', () => console.log('Redis connected'));
+        redisClient.on('reconnecting', () => console.log('Redis reconnecting'));
 
-        redisClient.on('connect', () => {
-            console.log('Redis client connected');
-        });
-
-        redisClient.on('reconnecting', () => {
-            console.log('Redis client reconnecting');
-        });
-
-        // Connect to Redis
         await redisClient.connect();
     } catch (err) {
-        console.error('Error initializing Redis client:', err);
-        throw new Error(`Failed to initialize Redis client: ${err.message}`);
+        console.error('Redis init failed:', err);
+        throw err;
     }
 }
 

@@ -5,10 +5,13 @@ const cors = require('cors');
 const { exec } = require('child_process');
 const redisQueries = require('./redisQueries'); // Import Redis query interface
 const recommendationService = require('./recommendationService'); // Import recommendation service
-const { getConfig, setConfig } = require('./zookeeperClient'); // Import ZooKeeper client
-
+const zkClient = require('./zookeeperClient'); // Import ZooKeeper client
+const client = require('prom-client');
 const app = express();
 const port = process.env.PORT || 3000;
+
+// collect default metrics (CPU, memory, event loop lag…)
+client.collectDefaultMetrics({ timeout: 5000 });
 
 // Middleware
 app.use(bodyParser.json());
@@ -155,8 +158,7 @@ app.get('/api/recommendations/:userId', async (req, res) => {
 // Example: Get configuration from ZooKeeper
 app.get('/api/config/:path', async (req, res) => {
     try {
-        const path = req.params.path;
-        const config = await getConfig(path);
+        const config = await zkClient.getConfig(req.params.path);
         res.json({ path, config });
     } catch (err) {
         res.status(500).send({ error: err.message });
@@ -166,12 +168,104 @@ app.get('/api/config/:path', async (req, res) => {
 // Example: Set configuration in ZooKeeper
 app.post('/api/config/:path', async (req, res) => {
     try {
-        const path = req.params.path;
-        const value = req.body.value;
-        await setConfig(path, value);
-        res.json({ path, value });
+        await zkClient.setConfig(req.params.path, JSON.stringify(req.body));
+        res.json({ success: true });
     } catch (err) {
         res.status(500).send({ error: err.message });
+    }
+});
+
+
+// Get current weights
+app.get('/api/recommendation/weights', async (req, res) => {
+    try {
+        const weightsData = await zkClient.getConfig('/config/recommendation/weights');
+
+        // 解析数据（兼容字符串和对象）
+        const parsedWeights = typeof weightsData === 'string' ?
+            JSON.parse(weightsData) :
+            weightsData;
+
+        // 宽松验证（允许数值为0）
+        if (
+            parsedWeights.view === undefined ||
+            parsedWeights.add_to_cart === undefined ||
+            parsedWeights.purchase === undefined
+        ) {
+            throw new Error('Missing required weight fields');
+        }
+
+        // 强制转换为数字类型
+        const validatedWeights = {
+            view: Number(parsedWeights.view),
+            add_to_cart: Number(parsedWeights.add_to_cart),
+            purchase: Number(parsedWeights.purchase)
+        };
+
+        res.json(validatedWeights);
+    } catch (err) {
+        console.error('ZK weights fetch error:', err);
+
+        // 返回安全的默认值
+        const defaultWeights = { view: 1, add_to_cart: 3, purchase: 5 };
+        res.json(defaultWeights);
+    }
+});
+
+// Update recommendation weights
+app.post('/api/recommendation/weights', async (req, res) => {
+    try {
+        const { view, add_to_cart, purchase } = req.body;
+
+        if (typeof view !== 'number' ||
+            typeof add_to_cart !== 'number' ||
+            typeof purchase !== 'number') {
+            return res.status(400).json({
+                error: "Invalid input",
+                details: "All weights must be numbers"
+            });
+        }
+
+        const weights = { view, add_to_cart, purchase };
+        const weightsString = JSON.stringify(weights);
+
+        await zkClient.setConfig('/config/recommendation/weights', weightsString);
+
+        res.json(weights);
+    } catch (err) {
+        console.error('Weight update error:', err);
+        res.status(500).json({
+            error: "Failed to update weights",
+            message: err.message,
+            stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+        });
+    }
+});
+
+
+
+// your own counters/gauges/histograms, e.g.:
+const httpRequestDuration = new client.Histogram({
+    name: 'http_request_duration_ms',
+    help: 'Duration of HTTP requests in ms',
+    labelNames: ['method', 'route', 'status_code'],
+});
+
+app.use((req, res, next) => {
+    const end = httpRequestDuration.startTimer({ method: req.method, route: req.path });
+    res.on('finish', () => {
+        end({ status_code: res.statusCode });
+    });
+    next();
+});
+
+app.get('/metrics', async (req, res) => {
+    try {
+        res.set('Content-Type', client.register.contentType);
+        const metrics = await client.register.metrics();
+        res.end(metrics);
+    } catch (err) {
+        res.status(500).end(err.message);
     }
 });
 
@@ -182,3 +276,4 @@ app.listen(port, async () => {
     // Clear old data from Redis
     await clearOldData();
 });
+
