@@ -195,3 +195,76 @@ Znode data: Hello Zookeeper
 ```
 
 If the test scripts produce the expected output, it indicates that the Kafka, Redis, and Zookeeper clusters are functioning correctly.
+
+## Core Business Implementation
+
+### Flink Environment Setup and Real-time Interest Tag Computation
+- **Build and deploy Flink job**
+    - Navigate to the `flink-project` directory and package the job with Maven:
+      ```bash
+      cd flink-project
+      mvn clean package
+      ```  
+    - The resulting `flink-project-1.0-SNAPSHOT.jar` is mounted into the JobManager container at `/flink-job.jar`.
+- **Real-time tag computation**
+    - In `UserInterestTagsJob.java`, consume from the Kafka topics `view-events`, `add-to-cart-events`, and `purchase-events`.
+    - Assign scores to events (e.g. view = 1, add_to_cart = 3, purchase = 5) and aggregate per user into a `UserProfile` object.
+    - Use the `RedisUserInterestMapper` to write updated tag scores into Redis.
+
+### Redis User Profile Storage and Query Interfaces
+- **Writing profiles to Redis**
+    - The Flink job uses a Redis client (`jedis`) to HSET each user’s profile:
+      ```
+      HSET user:profile:<userId> <tag> <score>
+      ```  
+- **Backend query APIs**
+    - In `backend/src/redisQueries.js`, implement:
+      ```js
+      async function getUserProfile(userId) {
+        const data = await redisClient.hGetAll(`user:profile:${userId}`);
+        return Object.fromEntries(Object.entries(data).map(([k, v]) => [k, Number(v)]));
+      }
+      async function getUserProfiles(userIds) {
+        // batch hMGet or pipelined HGETALL for each user
+      }
+      ```  
+  :contentReference[oaicite:0]{index=0}&#8203;:contentReference[oaicite:1]{index=1}
+
+### Recommendation Service Integration
+- **Fetching user profiles**
+    - In `backend/src/recommendationService.js` call `getUserProfile(userId)` to retrieve the latest tag scores.
+- **Simple recommendation algorithm**
+    - Sort tags by descending score and apply any product-similarity or cold-start rules to generate the top-N recommendations.
+
+### ZooKeeper Dynamic Configuration Center
+- **Configuration node initialization**
+    - In `backend/src/zookeeperClient.js`, ensure the ZK path `/config/recommendation/weights` exists and contains default weights:
+      ```json
+      { "view": 1, "add_to_cart": 3, "purchase": 5 }
+      ```  
+- **Runtime get/set API**
+    - Expose `getConfig(path)` and `setConfig(path, value)` methods for retrieval and updates via the backend’s `/api/config/:path` endpoints. :contentReference[oaicite:2]{index=2}&#8203;:contentReference[oaicite:3]{index=3}
+
+### Hot-Update of Recommendation Parameters
+- **Parameter monitoring**
+    - Implement a watcher or polling in `paramMonitor.js` that listens for changes to `/config/recommendation/weights`.
+- **Applying new weights**
+    - On update events, invoke `recommendationService.updateWeights(newWeights)` so the service immediately uses new parameters without a restart.
+
+### Monitoring Setup (Prometheus & Grafana)
+- **Prometheus instrumentation**
+    - In `backend/src/index.js`, integrate `prom-client` to collect default and custom metrics, exposing them on `/metrics`.
+    - Add Prometheus and exporters to `docker-compose.yml`.
+- **Grafana dashboards**
+    - Provision or manually import a dashboard that displays key KPIs:
+        - HTTP QPS (`sum(rate(http_request_duration_ms_count[1m]))`)
+        - p95 latency (`histogram_quantile(0.95, sum by (route, le)(rate(http_request_duration_ms_bucket[1m])))`)
+        - Error rate (`sum(rate(...{status_code=~"5.."}[1m])) / sum(rate(...[1m])) * 100`)
+
+### Documentation and Testing
+- **Documentation**
+    - This file captures all core business implementation details, from Flink job design through dynamic configuration and monitoring.
+- **Unit tests**
+    - Cover `redisQueries.js`, `recommendationService.js`, and `paramMonitor.js`.
+- **Integration tests**
+    - End-to-end scenarios in `tests/integration/systemIntegration.test.js` to verify Kafka → Flink → Redis → Recommendation API flow.
