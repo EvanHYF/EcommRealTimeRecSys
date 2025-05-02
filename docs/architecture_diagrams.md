@@ -1,4 +1,4 @@
-high‑level component overview (flowchart) 
+# High‑Level Component Overview
 
 ```mermaid
 flowchart LR
@@ -39,13 +39,13 @@ sequenceDiagram
     participant P as Prometheus
     participant G as Grafana
 
-    Sim->>K: publish view‑event JSON
-    K->>C: deliver message to partition
-    C->>R: SADD pageviews:&lt;date&gt;:&lt;product&gt;
-    C->>API: POST /api/user‑behavior
-    API->>R: RPUSH events list
-    K->>F: stream event for tag computation
-    F->>R: HSET user:interest:&lt;id&gt;
-    API->>P: expose /metrics
-    P->>G: scrape and visualize
+    Sim->>K: "publish view‑event JSON"
+    K->>C: "deliver message to partition"
+    C->>R: "SADD pageviews:<date>:<product>"
+    C->>API: "POST /api/user‑behavior"
+    API->>R: "RPUSH events list"
+    K->>F: "stream event for tag computation"
+    F->>R: "HSET user:interest:<id>"
+    API->>P: "expose /metrics"
+    P->>G: "scrape and visualize"
 ```
