@@ -27,8 +27,8 @@ flowchart LR
     Prometheus --> Grafana["Grafana Dashboard"]
   end
 ```
-```mermaid
 detailed sequence (sequenceDiagram)
+```mermaid
 sequenceDiagram
     participant Sim as E‑com Simulator
     participant K as Kafka
