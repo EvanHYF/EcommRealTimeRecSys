@@ -1,0 +1,151 @@
+├── .babelrc
+├── .idea/
+  ├── .gitignore
+  ├── EcommRealTimeRecSys.iml
+  ├── misc.xml
+  ├── modules.xml
+  ├── vcs.xml
+  ├── workspace.xml
+├── backend/
+  ├── .env
+  ├── .gitignore
+  ├── package-lock.json
+  ├── package.json
+  ├── src/
+    ├── config/
+      ├── zkConfig.js
+    ├── controllers/
+      ├── userController.js
+    ├── ecommerceSimulator.js
+    ├── eventProcessor.js
+    ├── index.js
+    ├── models/
+      ├── userModel.js
+    ├── recommendationService.js
+    ├── redisQueries.js
+    ├── routes/
+      ├── userRoutes.js
+    ├── services/
+      ├── userService.js
+    ├── utils/
+      ├── paramMonitor.js
+    ├── zookeeperClient.js
+├── DEVELOPMENT_DOCUMENTATION.md
+├── docker-compose.yml
+├── docs/
+├── flink-project/
+  ├── .mvn/
+    ├── jvm.config
+    ├── maven.config
+  ├── logs/
+  ├── pom.xml
+  ├── src/
+    ├── main/
+      ├── java/
+        ├── com/
+          ├── ecommrealtimerecsys/
+            ├── flink/
+              ├── App.java
+            ├── UserInterestTagsJob.java
+      ├── resources/
+        ├── log4j.properties
+    ├── test/
+      ├── java/
+        ├── com/
+          ├── ecommrealtimerecsys/
+            ├── flink/
+              ├── AppTest.java
+  ├── target/
+    ├── classes/
+      ├── com/
+        ├── ecommrealtimerecsys/
+          ├── flink/
+            ├── App.class
+          ├── UserInterestTagsJob$1.class
+          ├── UserInterestTagsJob$2.class
+          ├── UserInterestTagsJob$RedisUserInterestMapper.class
+          ├── UserInterestTagsJob$RedisUserProfileMapper.class
+          ├── UserInterestTagsJob$UserProfile.class
+          ├── UserInterestTagsJob.class
+      ├── log4j.properties
+    ├── flink-project-1.0-SNAPSHOT.jar
+    ├── generated-sources/
+      ├── annotations/
+    ├── generated-test-sources/
+      ├── test-annotations/
+    ├── maven-archiver/
+      ├── pom.properties
+    ├── maven-status/
+      ├── maven-compiler-plugin/
+        ├── compile/
+          ├── default-compile/
+            ├── createdFiles.lst
+            ├── inputFiles.lst
+        ├── testCompile/
+          ├── default-testCompile/
+            ├── createdFiles.lst
+            ├── inputFiles.lst
+    ├── original-flink-project-1.0-SNAPSHOT.jar
+    ├── surefire-reports/
+      ├── 2025-03-25T16-03-45_046.dumpstream
+      ├── com.ecommrealtimerecsys.flink.AppTest.txt
+      ├── TEST-com.ecommrealtimerecsys.flink.AppTest.xml
+    ├── test-classes/
+      ├── com/
+        ├── ecommrealtimerecsys/
+          ├── flink/
+            ├── AppTest.class
+├── frontend/
+  ├── .gitignore
+  ├── package-lock.json
+  ├── package.json
+  ├── public/
+    ├── favicon.ico
+    ├── index.html
+    ├── logo192.png
+    ├── logo512.png
+    ├── manifest.json
+    ├── robots.txt
+  ├── README.md
+  ├── src/
+    ├── api/
+      ├── recommendations.js
+      ├── redisQueries.js
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── components/
+      ├── Footer.js
+      ├── Header.js
+    ├── index.css
+    ├── index.js
+    ├── logo.svg
+    ├── pages/
+      ├── HomePage.js
+      ├── ProductPage.js
+      ├── UserBehaviorMonitoringPage.js
+      ├── UserProfilePage.js
+      ├── WeightConfigPage.js
+    ├── reportWebVitals.js
+    ├── setupTests.js
+├── generate-folder-structure.js
+├── grafana/
+├── kafka/
+├── package-lock.json
+├── package.json
+├── project-structure.txt
+├── prometheus/
+├── README.md
+├── redis/
+├── target/
+  ├── flink-project-1.0-SNAPSHOT.jar/
+├── tests/
+  ├── integration/
+    ├── systemIntegration.test.js
+  ├── kafkaTest.js
+  ├── redisTest.js
+  ├── unit/
+    ├── ecommerceSimulator.test.js
+    ├── eventProcessor.test.js
+  ├── zookeeperTest.js
+├── zookeeper/

@@ -1,0 +1,184 @@
+version: '2'
+services:
+  zookeeper:
+    image: zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/data
+      - zookeeper_datalog:/datalog
+    networks:
+      - ecommrealtimerecsys_default
+
+  kafka1:
+    image: confluentinc/cp-kafka:latest
+    container_name: ecommrealtimerecsys-kafka1-1
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://ecommrealtimerecsys-kafka1-1:9092,OUTSIDE://localhost:9093
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MESSAGE_MAX_BYTES: 1048576000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 1048576000
+      KAFKA_SOCKET_REQUEST_MAX_BYTES: 1048576000
+      KAFKA_CREATE_TOPICS: "input-topic:1:3,output-topic:1:3,view-events:1:3,add-to-cart-events:1:3,purchase-events:1:3"
+    ports:
+      - "9093:9093"
+    networks:
+      - ecommrealtimerecsys_default
+
+  kafka2:
+    image: confluentinc/cp-kafka:latest
+    container_name: ecommrealtimerecsys-kafka2-1
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://ecommrealtimerecsys-kafka2-1:9092,OUTSIDE://localhost:9094
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MESSAGE_MAX_BYTES: 1048576000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 1048576000
+      KAFKA_SOCKET_REQUEST_MAX_BYTES: 1048576000
+      KAFKA_CREATE_TOPICS: "input-topic:1:3,output-topic:1:3,view-events:1:3,add-to-cart-events:1:3,purchase-events:1:3"
+    ports:
+      - "9094:9094"
+    networks:
+      - ecommrealtimerecsys_default
+
+  kafka3:
+    image: confluentinc/cp-kafka:latest
+    container_name: ecommrealtimerecsys-kafka3-1
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://ecommrealtimerecsys-kafka3-1:9092,OUTSIDE://localhost:9095
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9095
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_MESSAGE_MAX_BYTES: 1048576000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 1048576000
+      KAFKA_SOCKET_REQUEST_MAX_BYTES: 1048576000
+      KAFKA_CREATE_TOPICS: "input-topic:1:3,output-topic:1:3,view-events:1:3,add-to-cart-events:1:3,purchase-events:1:3"
+    ports:
+      - "9095:9095"
+    networks:
+      - ecommrealtimerecsys_default
+
+  kafka-cli:
+    image: confluentinc/cp-kafka:latest
+    container_name: ecommrealtimerecsys-kafka-cli-1
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    entrypoint: /bin/sh
+    tty: true
+    networks:
+      - ecommrealtimerecsys_default
+
+  jobmanager:
+    image: flink:1.14.0
+    container_name: jobmanager
+    hostname: jobmanager
+    volumes:
+      - ./flink-project/target/flink-project-1.0-SNAPSHOT.jar:/flink-job.jar
+    ports:
+      - "8081:8081"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    command: jobmanager
+    networks:
+      - ecommrealtimerecsys_default
+
+  taskmanager:
+    image: flink:1.14.0
+    container_name: taskmanager
+    depends_on:
+      - jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    command: taskmanager
+    networks:
+      - ecommrealtimerecsys_default
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6479:6379"
+    networks:
+      - ecommrealtimerecsys_default
+
+  # Prometheus
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter
+    command: --redis.addr redis://redis:6379
+    ports:
+      - "9121:9121"
+    networks:
+      - ecommrealtimerecsys_default
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:latest
+    container_name: kafka-exporter
+    environment:
+      KAFKA_SERVER: kafka1:9092
+    ports:
+      - "9308:9308"
+    networks:
+      - ecommrealtimerecsys_default
+
+  prometheus:
+    image: prom/prometheus:v2.41.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks:
+      - ecommrealtimerecsys_default
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3002:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - ecommrealtimerecsys_default
+
+volumes:
+  zookeeper_data:
+    driver: local
+  zookeeper_datalog:
+    driver: local
+
+networks:
+  ecommrealtimerecsys_default:
+    driver: bridge

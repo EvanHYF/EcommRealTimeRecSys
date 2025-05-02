@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="822960d5-7394-4643-9842-b415bf52536e" name="Changes" comment="Record test results and analyze system bottlenecks.">
+      <change afterPath="$PROJECT_DIR$/backend/backend/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/backend/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/.mvn/jvm.config" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/.mvn/maven.config" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/src/main/java/com/ecommrealtimerecsys/flink/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/src/test/java/com/ecommrealtimerecsys/flink/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$2.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$RedisUserInterestMapper.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$RedisUserProfileMapper.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$UserProfile.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/flink/App.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/log4j.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/flink-project-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/original-flink-project-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/surefire-reports/2025-03-25T16-03-45_046.dumpstream" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/surefire-reports/TEST-com.ecommrealtimerecsys.flink.AppTest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/surefire-reports/com.ecommrealtimerecsys.flink.AppTest.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flink-project/target/test-classes/com/ecommrealtimerecsys/flink/AppTest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/logo192.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/logo512.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/manifest.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/robots.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/App.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/App.test.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/logo.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/reportWebVitals.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/setupTests.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2wNSsxN6gfIAVJHH4jBInJLzFBB" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;A:/Java/EcommRealTimeRecSys&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="Locust" type="PythonConfigurationType" factoryName="Python">
+      <module name="EcommRealTimeRecSys" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.11 (EcommRealTimeRecSys)" />
+      <option name="WORKING_DIRECTORY" value="A:\Java\EcommRealTimeRecSys" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="locust" />
+      <option name="PARAMETERS" value="-f locustfile.py --host http://localhost:3000" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="822960d5-7394-4643-9842-b415bf52536e" name="Changes" comment="" />
+      <created>1745880749307</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1745880749307</updated>
+      <workItem from="1745880755020" duration="6329000" />
+    </task>
+    <task id="LOCAL-00001" summary="Record test results and analyze system bottlenecks.">
+      <option name="closed" value="true" />
+      <created>1746157894859</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1746157894859</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="1. Write scripts to periodically preload high-frequency data into Redis&#10;2. Perform stress testing using Locust to simulate peak traffic." />
+    <MESSAGE value="Record test results and analyze system bottlenecks." />
+    <option name="LAST_COMMIT_MESSAGE" value="Record test results and analyze system bottlenecks." />
+  </component>
+</project>
