@@ -2,37 +2,41 @@
 
 ## 1. Architecture Overview
 
+```mermaid
 flowchart LR
-subgraph Data Collection
-EcomSim["E-commerce\nSimulator"] -->|produce events| KafkaCluster["Kafka\n3-node Cluster"]
-end
 
-subgraph Consumption
-  KafkaCluster -->|consume| PartitionMonitor["Partition Monitor\n(ZooKeeper)"]
-  PartitionMonitor --> ConsumerWorker["ConsumerWorker.js\n(1 process per partition)"]
-  ConsumerWorker -->|HTTP POST| ExpressAPI["Backend\nNode.js/Express"]
-  ConsumerWorker -->|SADD UV sets| RedisUV["Redis\n`pageviews:…` sets"]
-end
+  subgraph Data Collection
+    EcomSim["E‑commerce<br/>Simulator"]
+      -->|produce events| KafkaCluster["Kafka<br/>3‑node Cluster"]
+  end
 
-subgraph Processing
-  KafkaCluster -->|stream to| FlinkJob["Flink\nReal-time Job"]
-  FlinkJob -->|write interest tags| RedisProfile["Redis\n`user:interest:<id>`"]
-end
+  subgraph Consumption
+    KafkaCluster -->|consume| PartitionMonitor["Partition Monitor<br/>(ZooKeeper)"]
+    PartitionMonitor --> ConsumerWorker["ConsumerWorker.js<br/>(1 process per partition)"]
+    ConsumerWorker -->|HTTP POST| ExpressAPI["Backend<br/>Node.js/Express"]
+    ConsumerWorker -->|SADD UV sets| RedisUV["Redis<br/>&#96;pageviews:…&#96; sets"]
+  end
 
-subgraph Storage & API
-  ExpressAPI -->|writes events| RedisEvents["Redis\n`events` list"]
-  ExpressAPI -->|reads profiles| RedisProfile
-  ExpressAPI -->|reads UV| RedisUV
-  ExpressAPI -->|reads user profiles| RedisUserProfile["Redis\n`user-profiles` hash"]
-  ExpressAPI -->|serves| FrontendUI["Frontend\n(React.js)"]
-end
+  subgraph Processing
+    KafkaCluster -->|stream to| FlinkJob["Flink<br/>Real‑time Job"]
+    FlinkJob -->|write interest tags| RedisProfile["Redis<br/>&#96;user:interest:&lt;id&gt;&#96;"]
+  end
 
-subgraph Monitoring
-  ExpressAPI -->|/metrics| Prometheus["Prometheus"]
-  RedisExporter["redis-exporter"] --> Prometheus
-  KafkaExporter["kafka-exporter"] --> Prometheus
-  Prometheus --> Grafana["Grafana"]
-end
+  subgraph Storage & API
+    ExpressAPI -->|writes events| RedisEvents["Redis<br/>&#96;events&#96; list"]
+    ExpressAPI -->|reads profiles| RedisProfile
+    ExpressAPI -->|reads UV| RedisUV
+    ExpressAPI -->|reads user profiles| RedisUserProfile["Redis<br/>&#96;user‑profiles&#96; hash"]
+    ExpressAPI -->|serves| FrontendUI["Frontend<br/>(React.js)"]
+  end
+
+  subgraph Monitoring
+    ExpressAPI -->|/metrics| Prometheus["Prometheus"]
+    RedisExporter["redis‑exporter"] --> Prometheus
+    KafkaExporter["kafka‑exporter"] --> Prometheus
+    Prometheus --> Grafana["Grafana"]
+  end
+```
 
 
 - **Kafka** captures user “view”, “add-to-cart” and “purchase” events.
