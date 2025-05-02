@@ -83,12 +83,12 @@ EcommRealTimeRecSys captures and processes user behavior (views, add-to-cart, pu
    ```
    Or Run index.js and Kafka Consumer Monitor Together 
    ```bash
-   npm start:all
+   npm run start:all
    ```
    The Express API will listen on `http://localhost:3000`.
 4. **Start Kafka Consumer Monitor**
    ```bash
-   npm start:monitor
+   npm run start:monitor
    ```
    This watches ZooKeeper for partition changes and auto-scales consumer processes.
 5. **Run Frontend**

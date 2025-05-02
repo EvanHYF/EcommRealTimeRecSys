@@ -72,19 +72,22 @@ async function getUserInterest(userId) {
         const value = await redisClient.hGet(key, userId);
 
         if (!value) {
-            throw new Error(`User interest with ID ${userId} does not exist in Redis.`);
+            // CHANGED: return empty object instead of throwing
+            console.warn(`No user interest for ID ${userId}, returning empty.`);
+            return {};
         }
 
-        // 确保 value 是 JSON 格式
         try {
             return JSON.parse(value);
         } catch (err) {
             console.error('Invalid JSON format in Redis:', value);
-            throw new Error('Stored value is not valid JSON.');
+            // CHANGED: fallback to empty object rather than erroring out
+            return {};
         }
     } catch (err) {
         console.error('Error fetching user interest:', err);
-        throw new Error(`Failed to fetch user interest: ${err.message}`);
+        // CHANGED: swallow errors and return empty object
+        return {};
     }
 }
 

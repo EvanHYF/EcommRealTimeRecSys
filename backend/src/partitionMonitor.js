@@ -1,47 +1,66 @@
-// Spawns/kills consumerWorker processes based on topic partitions in ZooKeeper
+// backend/src/partitionMonitor.js
 require('dotenv').config();
 const { fork } = require('child_process');
 const path = require('path');
-const zkClientModule = require('./zookeeperClient');
-const topics = ['view-events','add-to-cart-events','purchase-events'];
-const workers = topics.reduce((m, t) => { m[t] = {}; return m; }, {});
+const zookeeper = require('node-zookeeper-client');
 
-async function watchTopic(topic) {
+const ZK_HOST = process.env.ZK_HOST || 'localhost:2181';
+const TOPICS = ['view-events','add-to-cart-events','purchase-events','user-interest-tags-topic'];
+
+const zk = zookeeper.createClient(ZK_HOST);
+const workers = {}; // key = `${topic}-${partition}`
+
+function spawnWorker(topic, partition) {
+    const key = `${topic}-${partition}`;
+    if (workers[key]) return;
+    console.log(`Spawning consumer for ${topic}[${partition}]`);
+    const worker = fork(path.resolve(__dirname, 'consumerWorker.js'), [topic, partition], {
+        env: process.env
+    });
+    workers[key] = worker;
+}
+
+function killWorker(topic, partition) {
+    const key = `${topic}-${partition}`;
+    const worker = workers[key];
+    if (!worker) return;
+    console.log(`Killing consumer for ${topic}[${partition}]`);
+    worker.kill('SIGINT');
+    delete workers[key];
+}
+
+function watchTopic(topic) {
     const zkPath = `/brokers/topics/${topic}/partitions`;
-    const client = zkClientModule;
-
-    async function update() {
-        const partitions = await new Promise((resolve, reject) => {
-            client.client.getChildren(
-                zkPath,
-                () => update(),
-                (err, children) => err ? reject(err) : resolve(children.map(p=>parseInt(p,10)))
-            );
-        });
-        const current = Object.keys(workers[topic]).map(n=>parseInt(n,10));
-        // spawn new
-        partitions.forEach(p => {
-            if (workers[topic][p]) return;
-            const worker = fork(path.resolve(__dirname,'consumerWorker.js'), [topic, p]);
-            workers[topic][p] = worker;
-            console.log(`Spawned consumer for ${topic}[partition=${p}]`);
-        });
-        // kill removed
-        current.forEach(p => {
-            if (!partitions.includes(p)) {
-                workers[topic][p].kill();
-                delete workers[topic][p];
-                console.log(`Killed consumer for ${topic}[partition=${p}]`);
+    function updatePartitions() {
+        zk.getChildren(zkPath, updatePartitions, (err, children) => {
+            if (err) {
+                console.error(`Error fetching partitions for ${topic}:`, err);
+                return;
+            }
+            const latest = new Set(children.map(p => p));
+            // spawn new
+            for (const p of latest) spawnWorker(topic, p);
+            // kill removed
+            for (const key of Object.keys(workers)) {
+                const [t, part] = key.split('-');
+                if (t === topic && !latest.has(part)) {
+                    killWorker(t, part);
+                }
             }
         });
     }
-
-    await client.connectionPromise;
-    await update();
+    // ensure the ZK path exists then start watching
+    zk.exists(zkPath, (err, stat) => {
+        if (err || !stat) {
+            console.error(`ZK path not found: ${zkPath}`);
+            return;
+        }
+        updatePartitions();
+    });
 }
 
-async function init() {
-    topics.forEach(topic => watchTopic(topic).catch(err => console.error(`Error watching ${topic}:`, err)));
-}
-
-init();
+zk.once('connected', () => {
+    console.log('Connected to ZooKeeper');
+    TOPICS.forEach(watchTopic);
+});
+zk.connect();
