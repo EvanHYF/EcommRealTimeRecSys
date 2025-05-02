@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="822960d5-7394-4643-9842-b415bf52536e" name="Changes" comment="Add all">
-      <change afterPath="$PROJECT_DIR$/docs/architecture_diagrams.md" afterDir="false" />
+    <list default="true" id="822960d5-7394-4643-9842-b415bf52536e" name="Changes" comment="Create architecture diagrams to show interactions between components.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DEVELOPMENT_DOCUMENTATION.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/DEVELOPMENT_DOCUMENTATION.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Technical_Documentation.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Technical_Documentation.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +120,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746159332725</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Create architecture diagrams to show interactions between components.">
+      <option name="closed" value="true" />
+      <created>1746159572287</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746159572287</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,6 +150,7 @@
     <MESSAGE value="Record test results and analyze system bottlenecks." />
     <MESSAGE value="Add all" />
     <MESSAGE value="Write the project's technical documentation, including architecture design, fault-tolerance solutions, and optimization details." />
-    <option name="LAST_COMMIT_MESSAGE" value="Write the project's technical documentation, including architecture design, fault-tolerance solutions, and optimization details." />
+    <MESSAGE value="Create architecture diagrams to show interactions between components." />
+    <option name="LAST_COMMIT_MESSAGE" value="Create architecture diagrams to show interactions between components." />
   </component>
 </project>
