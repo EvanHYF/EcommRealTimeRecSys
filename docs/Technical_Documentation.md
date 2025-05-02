@@ -8,30 +8,30 @@ EcomSim["E-commerce\nSimulator"] -->|produce events| KafkaCluster["Kafka\n3-node
 end
 
 subgraph Consumption
-KafkaCluster -->|consume| PartitionMonitor["Partition Monitor\n(ZooKeeper)"]
-PartitionMonitor --> ConsumerWorker["ConsumerWorker.js\n(1 process per partition)"]
-ConsumerWorker -->|HTTP POST| ExpressAPI["Backend\nNode.js/Express"]
-ConsumerWorker -->|SADD UV sets| RedisUV["Redis\n`pageviews:…` sets"]
+  KafkaCluster -->|consume| PartitionMonitor["Partition Monitor\n(ZooKeeper)"]
+  PartitionMonitor --> ConsumerWorker["ConsumerWorker.js\n(1 process per partition)"]
+  ConsumerWorker -->|HTTP POST| ExpressAPI["Backend\nNode.js/Express"]
+  ConsumerWorker -->|SADD UV sets| RedisUV["Redis\n`pageviews:…` sets"]
 end
 
 subgraph Processing
-KafkaCluster -->|stream to| FlinkJob["Flink\nReal-time Job"]
-FlinkJob -->|write interest tags| RedisProfile["Redis\n`user:interest:<id>`"]
+  KafkaCluster -->|stream to| FlinkJob["Flink\nReal-time Job"]
+  FlinkJob -->|write interest tags| RedisProfile["Redis\n`user:interest:<id>`"]
 end
 
 subgraph Storage & API
-ExpressAPI -->|writes events| RedisEvents["Redis\n`events` list"]
-ExpressAPI -->|reads profiles| RedisProfile
-ExpressAPI -->|reads UV| RedisUV
-ExpressAPI -->|reads user profiles| RedisUserProfile["Redis\n`user-profiles` hash"]
-ExpressAPI -->|serves| FrontendUI["Frontend\n(React.js)"]
+  ExpressAPI -->|writes events| RedisEvents["Redis\n`events` list"]
+  ExpressAPI -->|reads profiles| RedisProfile
+  ExpressAPI -->|reads UV| RedisUV
+  ExpressAPI -->|reads user profiles| RedisUserProfile["Redis\n`user-profiles` hash"]
+  ExpressAPI -->|serves| FrontendUI["Frontend\n(React.js)"]
 end
 
 subgraph Monitoring
-ExpressAPI -->|/metrics| Prometheus["Prometheus"]
-RedisExporter["redis-exporter"] --> Prometheus
-KafkaExporter["kafka-exporter"] --> Prometheus
-Prometheus --> Grafana["Grafana"]
+  ExpressAPI -->|/metrics| Prometheus["Prometheus"]
+  RedisExporter["redis-exporter"] --> Prometheus
+  KafkaExporter["kafka-exporter"] --> Prometheus
+  Prometheus --> Grafana["Grafana"]
 end
 
 
