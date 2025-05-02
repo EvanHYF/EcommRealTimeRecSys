@@ -4,51 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="822960d5-7394-4643-9842-b415bf52536e" name="Changes" comment="Record test results and analyze system bottlenecks.">
-      <change afterPath="$PROJECT_DIR$/backend/backend/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/backend/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/.mvn/jvm.config" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/.mvn/maven.config" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/src/main/java/com/ecommrealtimerecsys/flink/App.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/src/test/java/com/ecommrealtimerecsys/flink/AppTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$RedisUserInterestMapper.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$RedisUserProfileMapper.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob$UserProfile.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/UserInterestTagsJob.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/com/ecommrealtimerecsys/flink/App.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/classes/log4j.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/flink-project-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/original-flink-project-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/surefire-reports/2025-03-25T16-03-45_046.dumpstream" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/surefire-reports/TEST-com.ecommrealtimerecsys.flink.AppTest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/surefire-reports/com.ecommrealtimerecsys.flink.AppTest.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flink-project/target/test-classes/com/ecommrealtimerecsys/flink/AppTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/logo192.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/logo512.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/manifest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/robots.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/App.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/App.test.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/logo.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/reportWebVitals.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/setupTests.js" afterDir="false" />
+    <list default="true" id="822960d5-7394-4643-9842-b415bf52536e" name="Changes" comment="Add all">
+      <change afterPath="$PROJECT_DIR$/Technical_Documentation.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,15 +100,35 @@
       <option name="project" value="LOCAL" />
       <updated>1746157894859</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Add all">
+      <option name="closed" value="true" />
+      <created>1746158419911</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1746158419911</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1. Write scripts to periodically preload high-frequency data into Redis&#10;2. Perform stress testing using Locust to simulate peak traffic." />
     <MESSAGE value="Record test results and analyze system bottlenecks." />
-    <option name="LAST_COMMIT_MESSAGE" value="Record test results and analyze system bottlenecks." />
+    <MESSAGE value="Add all" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add all" />
   </component>
 </project>
